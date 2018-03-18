@@ -7,6 +7,7 @@ var (
 	Mu_Token  string
 	Mu_Uri    string
 	Mu_NodeID int
+	Log_Path string
 )
 
 func InitEnv() {
@@ -14,5 +15,5 @@ func InitEnv() {
 	Mu_Uri = env.Get("MU_URI")
 	Mu_Token = env.Get("MU_TOKEN")
 	Mu_NodeID = env.GetInt("MU_NODE_ID")
-
+	Log_Path = env.Get("LOG_FILE")
 }

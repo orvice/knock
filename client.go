@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
+	"github.com/orvice/utils/log"
 	"io"
 	"net"
 	"sync"
@@ -31,9 +31,9 @@ func (c *Client) tcp() {
 	var err error
 	c.l, err = net.Listen("tcp", c.getListenAddr())
 	if err != nil {
-		fmt.Println(err, err.Error())
+		log.Errorf("listen tcp port %s error %v", c.getListenAddr(), err)
 	}
-	fmt.Printf("Run client port: %d dstAddr: %s", c.port, c.dstAddr)
+	logger.Infof("Run client port: %d dstAddr: %s", c.port, c.dstAddr)
 	for {
 		srcConn, err := c.l.Accept()
 		if err != nil {
@@ -43,27 +43,26 @@ func (c *Client) tcp() {
 		d_tcpAddr, _ := net.ResolveTCPAddr("tcp4", c.dstAddr)
 		dstConn, err := net.DialTCP("tcp", nil, d_tcpAddr)
 		if err != nil {
-			fmt.Println(err)
-			fmt.Print("can't connect " + c.dstAddr)
+			logger.Errorf("can't connect " + c.dstAddr)
 			srcConn.Close()
 			continue
 		}
 		go func() {
 			n, err := io.Copy(srcConn, dstConn)
 			if err != nil {
-				log.Error("src->dst  ", err)
+				logger.Error("src->dst  ", err)
 			}
 			go c.AddTraffic(n)
-			log.Infof("src->dst Written len: %d", n)
+			logger.Infof("src->dst Written len: %d", n)
 		}()
 
 		go func() {
 			n, err := io.Copy(dstConn, srcConn)
 			if err != nil {
-				log.Error("dst->src  ", err)
+				logger.Error("dst->src  ", err)
 			}
 			go c.AddTraffic(n)
-			log.Infof("dst->src Written len: %d", n)
+			logger.Infof("dst->src Written len: %d", n)
 		}()
 	}
 }
@@ -73,5 +72,5 @@ func (c *Client) AddTraffic(i int64) {
 	defer c.lock.Unlock()
 	c.traffic += i
 
-	log.Infof("Traffic count: %d", c.traffic)
+	logger.Infof("Traffic count: %d", c.traffic)
 }

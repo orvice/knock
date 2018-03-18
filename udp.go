@@ -13,7 +13,7 @@ func (c *Client) udp() {
 		panic(err)
 	}
 
-	logger.Infof("UPD: try to listen on:", addr)
+	logger.Infof("UPD: try to listen on: %s", addr)
 
 	// 监听
 	conn, err := net.ListenUDP("udp", addr)
@@ -23,7 +23,7 @@ func (c *Client) udp() {
 
 	defer conn.Close()
 
-	logger.Infof("UDP try to handle request on:", addr)
+	logger.Infof("UDP try to handle request on: %s", addr)
 
 	for {
 		c.handleConn(conn)
@@ -35,7 +35,7 @@ func (c *Client) handleConn(conn *net.UDPConn) {
 	request := make([]byte, BufferSize)
 	n, remoteAddr, err := conn.ReadFromUDP(request)
 	if err != nil {
-		logger.Infof("fail to read from UDP:", err)
+		logger.Infof("fail to read from UDP: %v", err)
 		return
 	}
 
@@ -54,7 +54,7 @@ func (c *Client) forward(conn *net.UDPConn, remoteAddr *net.UDPAddr, request []b
 	// io.Copy(conn,targetConn)
 
 	if err != nil {
-		logger.Debugf("unable to connect target service with error:", err)
+		logger.Errorf("unable to connect target service with error: %v", err)
 		return
 	}
 

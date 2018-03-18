@@ -25,7 +25,7 @@ func runClient(port int32) {
 }
 
 func main() {
-	logger = log.NewDefaultLogger()
+	logger = log.NewFileLogger(Log_Path)
 	ports = new(sync.Map)
 
 	InitEnv()
