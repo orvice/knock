@@ -1,6 +1,9 @@
 package main
 
-import "github.com/orvice/utils/env"
+import (
+	"github.com/orvice/utils/env"
+	"time"
+)
 
 var (
 	dst       string
@@ -8,6 +11,8 @@ var (
 	Mu_Uri    string
 	Mu_NodeID int
 	Log_Path  string
+
+	RetryTime = time.Second * 100
 )
 
 func InitEnv() {

@@ -34,7 +34,7 @@ func (c *Client) tcp() {
 	c.l, err = net.Listen("tcp", c.getListenAddr())
 	if err != nil {
 		log.Errorf("listen tcp port %s error %v,will retry in 10s", c.getListenAddr(), err)
-		time.Sleep(time.Second * 10)
+		time.Sleep(RetryTime)
 		go c.tcp()
 		return
 	}
