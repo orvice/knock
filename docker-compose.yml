@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+  ss:
+    image: orvice/knock
+    restart: always
+    volumes:
+      - ./log:/var/log
+    environment:
+      - DST=xxx
+      - START_PORT=30000
+      - END_PORT=40000
+    network_mode: host
+ 
