@@ -10,7 +10,9 @@ const BufferSize = 65535
 func (c *Client) udp() {
 	addr, err := net.ResolveUDPAddr("udp", c.getListenAddr())
 	if err != nil {
-		panic(err)
+		logger.Infof("UDP fail to ResolveUDPAddr %s retry in 10s", c.getListenAddr())
+		time.Sleep(time.Second * 10)
+		go c.udp()
 	}
 
 	logger.Infof("UPD: try to listen on: %s", addr)
@@ -18,7 +20,10 @@ func (c *Client) udp() {
 	// 监听
 	conn, err := net.ListenUDP("udp", addr)
 	if err != nil {
-		panic(err)
+		logger.Infof("UDP fail to listen %s retry in 10s", c.getListenAddr())
+		time.Sleep(time.Second * 10)
+		go c.udp()
+		return
 	}
 
 	defer conn.Close()

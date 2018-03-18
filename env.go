@@ -7,7 +7,7 @@ var (
 	Mu_Token  string
 	Mu_Uri    string
 	Mu_NodeID int
-	Log_Path string
+	Log_Path  string
 )
 
 func InitEnv() {
