@@ -2,7 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/orvice/kit/log"
 	"sync"
+)
+
+var (
+	logger log.Logger
 )
 
 func runClient(port int32) {
@@ -15,6 +20,7 @@ func runClient(port int32) {
 }
 
 func main() {
+	logger = log.NewDefaultLogger()
 	InitEnv()
 	p := startPort
 	for p < endPort {
