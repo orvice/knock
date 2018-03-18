@@ -4,12 +4,15 @@ import "github.com/orvice/utils/env"
 
 var (
 	dst       string
-	startPort int32
-	endPort   int32
+	Mu_Token string
+	Mu_Uri string
+	Mu_NodeID int
 )
 
 func InitEnv() {
 	dst = env.Get("DST")
-	startPort = int32(env.GetInt("START_PORT"))
-	endPort = int32(env.GetInt("END_PORT"))
+	Mu_Uri = env.Get("MU_URI")
+	Mu_Token = env.Get("MU_URI")
+	Mu_NodeID = env.GetInt("MU_NODE_ID")
+
 }

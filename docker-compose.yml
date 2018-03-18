@@ -8,7 +8,9 @@ services:
       - ./log:/var/log
     environment:
       - DST=xxx
-      - START_PORT=30000
-      - END_PORT=40000
+      - MU_URI=https://demo.sspanel.xyz/mu/v2/
+      - MU_NODE_ID=1
+      - MU_TOKEN=forLove
+
     network_mode: host
  
