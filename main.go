@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/catpie/musdk-go"
-	"github.com/orvice/kit/log"
 	"sync"
 	"time"
+
+	"github.com/catpie/musdk-go"
+	"github.com/orvice/kit/log"
 )
 
 var (
