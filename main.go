@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/orvice/kit/log"
 	"github.com/catpie/musdk-go"
+	"github.com/orvice/kit/log"
 	"sync"
 	"time"
 )
