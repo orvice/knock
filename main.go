@@ -57,6 +57,7 @@ func checkUser(u musdk.User) {
 
 	_, ok := ports.Load(u.Port)
 	if ok {
+		logger.Infof("%d is running ... skip", u.Port)
 		return
 	}
 	runClient(int32(u.Port))
