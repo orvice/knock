@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/orvice/utils/log"
 	"io"
 	"net"
 	"sync"
+	"time"
+
+	"github.com/orvice/utils/log"
 )
 
 type Client struct {
@@ -31,7 +33,10 @@ func (c *Client) tcp() {
 	var err error
 	c.l, err = net.Listen("tcp", c.getListenAddr())
 	if err != nil {
-		log.Errorf("listen tcp port %s error %v", c.getListenAddr(), err)
+		log.Errorf("listen tcp port %s error %v,will retry in 10s", c.getListenAddr(), err)
+		time.Sleep(time.Second * 10)
+		go c.tcp()
+		return
 	}
 	logger.Infof("Run client port: %d dstAddr: %s", c.port, c.dstAddr)
 	for {
