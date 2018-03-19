@@ -44,7 +44,7 @@ func Daemon() {
 			time.Sleep(time.Minute)
 		}
 		for _, u := range users {
-			checkUser(u)
+			go checkUser(u)
 		}
 		time.Sleep(time.Second * 300)
 	}
