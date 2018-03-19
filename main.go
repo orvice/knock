@@ -22,6 +22,7 @@ func runClient(port int32) {
 		lock:    new(sync.Mutex),
 	}
 	go client.Run()
+	logger.Infof("store client %d to map", port)
 	ports.Store(port, client)
 }
 

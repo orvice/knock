@@ -10,6 +10,10 @@ import (
 	"github.com/orvice/utils/log"
 )
 
+const (
+	MaxErr = 10
+)
+
 type Client struct {
 	dstType string
 	dstAddr string
@@ -18,6 +22,8 @@ type Client struct {
 
 	lock    *sync.Mutex
 	traffic int64
+
+	errCount int64
 }
 
 func (c *Client) getListenAddr() string {
@@ -35,7 +41,11 @@ func (c *Client) tcp() {
 	if err != nil {
 		log.Errorf("listen tcp port %s error %v,will retry in 10s", c.getListenAddr(), err)
 		time.Sleep(RetryTime)
+		if c.errCount > MaxErr {
+			return
+		}
 		go c.tcp()
+		c.errCount++
 		return
 	}
 	logger.Infof("Run client port: %d dstAddr: %s", c.port, c.dstAddr)

@@ -13,6 +13,7 @@ func (c *Client) udp() {
 		logger.Infof("UDP fail to ResolveUDPAddr %s retry in 10s", c.getListenAddr())
 		time.Sleep(RetryTime)
 		go c.udp()
+		return
 	}
 
 	logger.Infof("UPD: try to listen on: %s", addr)
@@ -20,7 +21,7 @@ func (c *Client) udp() {
 	// 监听
 	conn, err := net.ListenUDP("udp", addr)
 	if err != nil {
-		logger.Infof("UDP fail to listen %s retry in 10s err ", c.getListenAddr(), err)
+		logger.Infof("UDP fail to listen %s retry in 10s err %v ", c.getListenAddr(), err)
 		time.Sleep(RetryTime)
 		go c.udp()
 		return
