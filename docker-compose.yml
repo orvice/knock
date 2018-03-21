@@ -11,7 +11,7 @@ services:
       - MU_URI=https://demo.sspanel.xyz/mu/v2/
       - MU_NODE_ID=1
       - MU_TOKEN=forLove
-      - LOG_FILE=/var/log/knock.log
+      - LOG_PATH=/var/log/knock.log
 
     network_mode: host
  

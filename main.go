@@ -9,9 +9,9 @@ var (
 )
 
 func main() {
+	InitEnv()
 	logger = log.NewFileLogger(Log_Path)
 
-	InitEnv()
 	InitWebApi()
 	m := NewManager()
 	m.Daemon()
