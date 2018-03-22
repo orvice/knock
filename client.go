@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/orvice/utils/log"
+	"context"
 )
 
 const (
@@ -15,6 +16,9 @@ const (
 )
 
 type Client struct {
+	ctx context.Context
+	cancel func()
+
 	dstType string
 	dstAddr string
 	l       net.Listener
@@ -68,7 +72,7 @@ func (c *Client) tcp() {
 				logger.Error("src->dst  ", err)
 			}
 			go c.AddTraffic(n)
-			logger.Infof("src->dst Written len: %d", n)
+			logger.Infof("%d src->dst Written len: %d",c.port, n)
 		}()
 
 		go func() {
@@ -77,7 +81,7 @@ func (c *Client) tcp() {
 				logger.Error("dst->src  ", err)
 			}
 			go c.AddTraffic(n)
-			logger.Infof("dst->src Written len: %d", n)
+			logger.Infof("%d dst->src Written len: %d",c.port, n)
 		}()
 	}
 }
@@ -87,5 +91,5 @@ func (c *Client) AddTraffic(i int64) {
 	defer c.lock.Unlock()
 	c.traffic += i
 
-	logger.Infof("Traffic count: %d", c.traffic)
+	logger.Debugf("Traffic count: %d", c.traffic)
 }

@@ -74,7 +74,7 @@ func (c *Client) forward(conn *net.UDPConn, remoteAddr *net.UDPAddr, request []b
 		logger.Errorf("unable to write request to target: %s\n", err.Error())
 		return
 	}
-	logger.Debugf("write %d bytes of request to target\n", n)
+	logger.Infof("write %d bytes of request to target\n", c.port, n)
 
 	data := make([]byte, BufferSize)
 	n, err = targetConn.Read(data)
@@ -83,11 +83,11 @@ func (c *Client) forward(conn *net.UDPConn, remoteAddr *net.UDPAddr, request []b
 		return
 	}
 
-	logger.Debugf("read %d bytes from target: \"%s\"\n", n, string(data))
+	logger.Debugf("udp %d read %d bytes from target: \"%s\"\n", c.port, n, string(data))
 	n, err = conn.WriteToUDP(data[:n], remoteAddr)
 	if err != nil {
 		logger.Errorf("fail to write to remote addr:", remoteAddr, string(request), err)
 		return
 	}
-	logger.Infof("%d bytes write to remote addr:", n, remoteAddr)
+	logger.Infof("udp %d %d bytes write to remote addr:", c.port, n, remoteAddr)
 }

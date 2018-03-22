@@ -21,12 +21,13 @@ func NewManager() *Manager {
 func (m *Manager) runClient(port int32) {
 	logger.Infof("run users %d", port)
 	client := &Client{
+
 		port:    port,
-		dstAddr: fmt.Sprintf("%s:%d", dst, port),
+		dstAddr: fmt.Sprintf("%s:%d", dst, port+Port_Offset),
 		lock:    new(sync.Mutex),
 	}
 	go client.Run()
-	logger.Infof("store client %d to map", port)
+	logger.Debugf("store client %d to map", port)
 	m.clients.Store(port, client)
 }
 
@@ -52,7 +53,7 @@ func (m *Manager) checkUser(u musdk.User) {
 
 	_, ok := m.clients.Load(int32(u.Port))
 	if ok {
-		logger.Infof("%d is running ... skip", u.Port)
+		logger.Debugf("%d is running ... skip", u.Port)
 		return
 	}
 	m.runClient(int32(u.Port))
