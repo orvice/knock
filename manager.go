@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/catpie/musdk-go"
+	"context"
 )
 
 type Manager struct {
@@ -20,8 +21,10 @@ func NewManager() *Manager {
 
 func (m *Manager) runClient(port int32) {
 	logger.Infof("run users %d", port)
+	ctx, cancel := context.WithCancel(context.Background())
 	client := &Client{
-
+		ctx:     ctx,
+		cancel:  cancel,
 		port:    port,
 		dstAddr: fmt.Sprintf("%s:%d", dst, port+Port_Offset),
 		lock:    new(sync.Mutex),

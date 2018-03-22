@@ -32,7 +32,12 @@ func (c *Client) udp() {
 	logger.Infof("UDP try to handle request on: %s", addr)
 
 	for {
-		c.handleConn(conn)
+		select {
+		case <-c.ctx.Done():
+			return
+		default:
+			c.handleConn(conn)
+		}
 	}
 }
 

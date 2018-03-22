@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/orvice/utils/log"
 	"context"
+	"github.com/orvice/utils/log"
 )
 
 const (
@@ -16,7 +16,7 @@ const (
 )
 
 type Client struct {
-	ctx context.Context
+	ctx    context.Context
 	cancel func()
 
 	dstType string
@@ -54,36 +54,45 @@ func (c *Client) tcp() {
 	}
 	logger.Infof("Run client port: %d dstAddr: %s", c.port, c.dstAddr)
 	for {
-		srcConn, err := c.l.Accept()
-		if err != nil {
-			continue
+		select {
+		case <-c.ctx.Done():
+			return
+		default:
+			c.handleTcpListener()
 		}
-
-		d_tcpAddr, _ := net.ResolveTCPAddr("tcp4", c.dstAddr)
-		dstConn, err := net.DialTCP("tcp", nil, d_tcpAddr)
-		if err != nil {
-			logger.Errorf("can't connect " + c.dstAddr)
-			srcConn.Close()
-			continue
-		}
-		go func() {
-			n, err := io.Copy(srcConn, dstConn)
-			if err != nil {
-				logger.Error("src->dst  ", err)
-			}
-			go c.AddTraffic(n)
-			logger.Infof("%d src->dst Written len: %d",c.port, n)
-		}()
-
-		go func() {
-			n, err := io.Copy(dstConn, srcConn)
-			if err != nil {
-				logger.Error("dst->src  ", err)
-			}
-			go c.AddTraffic(n)
-			logger.Infof("%d dst->src Written len: %d",c.port, n)
-		}()
 	}
+}
+
+func (c *Client) handleTcpListener() {
+	srcConn, err := c.l.Accept()
+	if err != nil {
+		return
+	}
+
+	d_tcpAddr, _ := net.ResolveTCPAddr("tcp4", c.dstAddr)
+	dstConn, err := net.DialTCP("tcp", nil, d_tcpAddr)
+	if err != nil {
+		logger.Errorf("can't connect " + c.dstAddr)
+		srcConn.Close()
+		return
+	}
+	go func() {
+		n, err := io.Copy(srcConn, dstConn)
+		if err != nil {
+			logger.Error("%d src->dst  ", c.port, err)
+		}
+		go c.AddTraffic(n)
+		logger.Infof("%d src->dst Written len: %d", c.port, n)
+	}()
+
+	go func() {
+		n, err := io.Copy(dstConn, srcConn)
+		if err != nil {
+			logger.Error("%d dst->src  ", c.port, err)
+		}
+		go c.AddTraffic(n)
+		logger.Infof("%d dst->src Written len: %d", c.port, n)
+	}()
 }
 
 func (c *Client) AddTraffic(i int64) {
@@ -91,5 +100,5 @@ func (c *Client) AddTraffic(i int64) {
 	defer c.lock.Unlock()
 	c.traffic += i
 
-	logger.Debugf("Traffic count: %d", c.traffic)
+	logger.Debugf("%d Traffic count: %d", c.port, c.traffic)
 }
