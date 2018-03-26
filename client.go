@@ -82,7 +82,7 @@ func (c *Client) handleTcpListener() {
 		if err != nil {
 			logger.Error("%d src->dst  ", c.port, err)
 		}
-		go c.AddTraffic(n)
+		c.AddTraffic(n)
 		logger.Infof("%d src->dst Written len: %d", c.port, n)
 	}()
 
@@ -91,7 +91,7 @@ func (c *Client) handleTcpListener() {
 		if err != nil {
 			logger.Error("%d dst->src  ", c.port, err)
 		}
-		go c.AddTraffic(n)
+		c.AddTraffic(n)
 		logger.Infof("%d dst->src Written len: %d", c.port, n)
 	}()
 }
