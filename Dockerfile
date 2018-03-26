@@ -10,22 +10,10 @@ RUN go-wrapper download
 # RUN go-wrapper install
 RUN CGO_ENABLED=0 go build
 
-# EXPOSE 8300
 
-# Now tell Docker what command to run when the container starts
-# CMD ["go-wrapper", "run"]
-
-FROM alpine
+FROM orvice/go-runtime
 
 COPY --from=builder /go/src/github.com/orvice/knock/knock .
 
-RUN apk update
-RUN apk upgrade
-RUN apk add ca-certificates && update-ca-certificates
-# Change TimeZone
-RUN apk add --update tzdata
-ENV TZ=Asia/Shanghai
-# Clean APK cache
-RUN rm -rf /var/cache/apk/*
 
 ENTRYPOINT [ "./knock" ]
