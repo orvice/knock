@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/catpie/musdk-go"
 	"context"
+	"github.com/catpie/musdk-go"
 )
 
 type Manager struct {
@@ -19,19 +19,20 @@ func NewManager() *Manager {
 	}
 }
 
-func (m *Manager) runClient(port int32) {
-	logger.Infof("run users %d", port)
+func (m *Manager) runClient(u musdk.User) {
+	logger.Infof("run users %d", u.Port)
 	ctx, cancel := context.WithCancel(context.Background())
 	client := &Client{
+		userID:  u.Id,
 		ctx:     ctx,
 		cancel:  cancel,
-		port:    port,
-		dstAddr: fmt.Sprintf("%s:%d", dst, port+Port_Offset),
+		port:    u.Port,
+		dstAddr: fmt.Sprintf("%s:%d", dst, u.Port+Port_Offset),
 		lock:    new(sync.Mutex),
 	}
 	go client.Run()
-	logger.Debugf("store client %d to map", port)
-	m.clients.Store(port, client)
+	logger.Debugf("store client %d to map", u.Port)
+	m.clients.Store(u.Port, client)
 }
 
 func (m *Manager) Daemon() {
@@ -54,10 +55,10 @@ func (m *Manager) checkUser(u musdk.User) {
 		return
 	}
 
-	_, ok := m.clients.Load(int32(u.Port))
+	_, ok := m.clients.Load(u.Port)
 	if ok {
 		logger.Debugf("%d is running ... skip", u.Port)
 		return
 	}
-	m.runClient(int32(u.Port))
+	m.runClient(u)
 }

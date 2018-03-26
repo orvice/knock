@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"context"
+	"github.com/catpie/musdk-go"
 	"github.com/orvice/utils/log"
 )
 
@@ -16,16 +17,16 @@ const (
 )
 
 type Client struct {
+	userID int64
 	ctx    context.Context
 	cancel func()
 
 	dstType string
 	dstAddr string
 	l       net.Listener
-	port    int32
+	port    int
 
-	lock    *sync.Mutex
-	traffic int64
+	lock *sync.Mutex
 
 	errCount int64
 }
@@ -96,9 +97,9 @@ func (c *Client) handleTcpListener() {
 }
 
 func (c *Client) AddTraffic(i int64) {
-	c.lock.Lock()
-	defer c.lock.Unlock()
-	c.traffic += i
-
-	logger.Debugf("%d Traffic count: %d", c.port, c.traffic)
+	logger.Debugf("%d add traffic %d", c.port, i)
+	apiClient.SaveTrafficLog(musdk.UserTrafficLog{
+		UserId: c.userID,
+		D:      i,
+	})
 }
