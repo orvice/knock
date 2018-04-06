@@ -10,7 +10,7 @@ var (
 
 func InitWebApi() error {
 	logger.Info("init mu api")
-	apiClient = musdk.NewClient(Mu_Uri, Mu_Token, Mu_NodeID, musdk.TypeSs)
+	apiClient = musdk.NewClient(Mu_Uri, Mu_Token, Mu_NodeID, musdk.TypeForward)
 	apiClient.SetLogger(logger)
 	go apiClient.UpdateTrafficDaemon()
 	return nil

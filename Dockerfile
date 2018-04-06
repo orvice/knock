@@ -7,7 +7,6 @@ ADD .  /go/src/github.com/orvice/knock
 
 # Download and install any required third party dependencies into the container.
 RUN go-wrapper download
-# RUN go-wrapper install
 RUN CGO_ENABLED=0 go build
 
 
